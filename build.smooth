@@ -1,0 +1,30 @@
+
+# libraries
+
+
+deps: [
+    file("lib/assertj-core-1.5.0.jar"),
+    file("lib/com.springsource.org.objenesis-1.0.0.jar"),
+    file("lib/guice-3.0-no_aop.jar"),
+    file("lib/javax.inject.jar"),
+    file("lib/junit-4.11.jar"),
+    file("lib/mockito-core-1.9.5.jar"),
+];
+
+test-injector.jar:
+    files("src/java") |
+    javac(libs=deps, source="1.5", target="1.5") |
+    jar ;
+
+test-injector.jar-with-deps: [test-injector.jar] | concatenateBlobs(with=deps) ;
+
+test-injector-tests.jar:
+    files("src/test") |
+    javac(libs=test-injector.jar-with-deps, source="1.5", target="1.5") |
+    jar ;
+
+test:
+    concatenateBlobs([ test-injector-tests.jar ], with=test-injector.jar-with-deps) |
+    junit(include="com/perunlabs/**/*Test.class");
+ 
+
