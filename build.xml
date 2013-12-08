@@ -1,0 +1,66 @@
+<project name="smooth-build" basedir=".">
+
+  <property name="dir.ant" location=".ant" />
+  <property name="dir.sources" location="src/java" />
+  <property name="dir.test-sources" location="src/test" />
+  <property name="dir.classes" location="${dir.ant}/classes" />
+  <property name="dir.test-classes" location="${dir.ant}/test-classes" />
+
+
+  <path id="dependencies">
+    <pathelement location="lib/assertj-core-1.5.0.jar" />
+    <pathelement location="lib/com.springsource.org.objenesis-1.0.0.jar" />
+    <pathelement location="lib/guice-3.0-no_aop.jar" />
+    <pathelement location="lib/hamcrest-core-1.3.jar" />
+    <pathelement location="lib/javax.inject.jar" />
+    <pathelement location="lib/junit-4.11.jar" />
+    <pathelement location="lib/mockito-core-1.9.5.jar" />
+  </path>
+
+  <target name="init">
+    <mkdir dir="${dir.ant}" />
+    <mkdir dir="${dir.classes}" />
+    <mkdir dir="${dir.test-classes}" />
+  </target>
+
+  <target name="compile-java" depends="init">
+    <javac destdir="${dir.classes}" includeantruntime="true">
+      <src path="${dir.sources}" />
+      <classpath>
+        <path refid="dependencies" />
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="compile-test" depends="compile-java">
+    <javac destdir="${dir.test-classes}">
+      <src path="src/test" />
+      <classpath>
+        <path refid="dependencies" />
+        <path location="${dir.classes}" />
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="test" depends="compile-test">
+    <junit haltonfailure="yes" reloading="false">
+      <classpath>
+        <path refid="dependencies" />
+        <path location="${dir.classes}" />
+        <path location="${dir.test-classes}" />
+      </classpath>
+      <formatter type="brief" usefile="false" />
+      <batchtest fork="no" todir="${dir.build}" >
+        <fileset dir="${dir.test-classes}" includes="**/*Test.class" excludes="**/MockitoTestCaseTest.class"/>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="release" depends="compile-java">
+    <jar destfile="${dir.ant}/test-injector-0.1.jar">
+      <zipfileset dir="${dir.classes}"/>
+      <zipfileset dir="${dir.sources}"/>
+    </jar>
+  </target>
+</project>
+
