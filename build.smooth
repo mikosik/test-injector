@@ -1,5 +1,11 @@
-
-# libraries
+# build file for smooth build system
+# smooth-build can be downloaded from https://github.com/mikosik/smooth-build
+#
+# to build test-injector.jar type
+# smooth build test-injector.jar
+#
+# to run tests type:
+# smooth build test
 
 
 deps: [
