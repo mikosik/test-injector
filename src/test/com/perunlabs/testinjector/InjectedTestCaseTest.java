@@ -12,17 +12,17 @@ import org.junit.Test;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-public class MockitoTestCaseTest {
+public class InjectedTestCaseTest {
   private static final String STRING = "abc";
 
   @Test
-  public void mockito_test_case_run_test_injector() throws Exception {
+  public void injected_test_case_run_test_injector() throws Exception {
     MyTestCase test = new MyTestCase();
     test.performTestInjection();
     assertThat(test.provider.get()).isEqualTo(STRING);
   }
 
-  private static class MyTestCase extends MockitoTestCase {
+  private static class MyTestCase extends InjectedTestCase {
     @Inject
     Provider<String> provider;
     @Bind

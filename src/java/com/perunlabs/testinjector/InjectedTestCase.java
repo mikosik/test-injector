@@ -11,7 +11,7 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.perunlabs.testinjector.inject.TestInjector;
 
-public class MockitoTestCase implements Module {
+public class InjectedTestCase implements Module {
   @Override
   public void configure(Binder binder) {}
 

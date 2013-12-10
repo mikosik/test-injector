@@ -288,7 +288,7 @@ public class TestInjectorTest {
   }
 
   @SuppressWarnings("unused")
-  private static class TestWithFieldsOfTheSameTypeAndDifferentAnnotations extends MockitoTestCase {
+  private static class TestWithFieldsOfTheSameTypeAndDifferentAnnotations extends InjectedTestCase {
     @Mock
     List<String> mock;
     @Inject
