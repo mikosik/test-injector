@@ -1,3 +1,5 @@
 .smooth
 .ant
-buck-out
+.gradle
+/build
+/buck-out
