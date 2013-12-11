@@ -5,7 +5,7 @@
 # buck build //:test-injector.jar
 #
 # to run tests type:
-# buck build //:tests
+# buck build //:test
 
 
 prebuilt_jar(
@@ -60,7 +60,7 @@ java_library(
 )
 
 java_test(
-  name = 'tests',
+  name = 'test',
   srcs = glob(['src/test/java/**/*.java']),
   deps = [':test-injector.jar'] + DEPS,
 )
