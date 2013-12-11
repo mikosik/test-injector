@@ -18,7 +18,7 @@ deps: [
     file("lib/mockito-core-1.9.5.jar"),
 ];
 
-sources: files("src/java") ;
+sources: files("src/main/java") ;
 
 test-injector.jar:
     javac(sources=sources, libs=deps, source="1.5", target="1.5") |
@@ -28,7 +28,7 @@ test-injector.jar:
 test-injector.jar-with-deps: [test-injector.jar] | concatenateBlobs(with=deps) ;
 
 test-injector-tests.jar:
-    files("src/test") |
+    files("src/test/java") |
     javac(libs=test-injector.jar-with-deps, source="1.5", target="1.5") |
     jar ;
 

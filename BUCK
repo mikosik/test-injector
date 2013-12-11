@@ -55,13 +55,13 @@ DEPS = [
 
 java_library(
   name = 'test-injector.jar',
-  srcs = glob(['src/java/**/*.java']),
+  srcs = glob(['src/main/java/**/*.java']),
   deps = DEPS,
 )
 
 java_test(
   name = 'tests',
-  srcs = glob(['src/test/**/*.java']),
+  srcs = glob(['src/test/java/**/*.java']),
   deps = [':test-injector.jar'] + DEPS,
 )
 

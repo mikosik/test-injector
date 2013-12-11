@@ -1,8 +1,8 @@
 <project name="smooth-build" basedir=".">
 
   <property name="dir.ant" location=".ant" />
-  <property name="dir.sources" location="src/java" />
-  <property name="dir.test-sources" location="src/test" />
+  <property name="dir.sources" location="src/main/java" />
+  <property name="dir.test-sources" location="src/test/java" />
   <property name="dir.classes" location="${dir.ant}/classes" />
   <property name="dir.test-classes" location="${dir.ant}/test-classes" />
 
