@@ -1,3 +1,16 @@
+<!--
+
+ build file for ant build system.
+ More info at http://ant.apache.org/
+
+ to build test-injector.jar type:
+ ant test-injector.jar
+
+ to run tests type:
+ ant test
+
+-->
+
 <project name="smooth-build" basedir=".">
 
   <property name="dir.ant" location=".ant" />
@@ -56,7 +69,7 @@
     </junit>
   </target>
 
-  <target name="release" depends="compile-java">
+  <target name="test-injector.jar" depends="compile-java">
     <jar destfile="${dir.ant}/test-injector-0.1.jar">
       <zipfileset dir="${dir.classes}"/>
       <zipfileset dir="${dir.sources}"/>
