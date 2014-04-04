@@ -10,10 +10,6 @@ import static com.perunlabs.testinjector.util.Collections.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +20,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 
-import com.google.inject.BindingAnnotation;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.perunlabs.testinjector.bind.DuplicateBindingException;
-import com.perunlabs.testinjector.util.MoreThanOneBindingAnnotationException;
 
 public class TestInjectorTest {
   private static final List<String> STRING_LIST = new ArrayList<String>();
@@ -179,28 +173,6 @@ public class TestInjectorTest {
 
     @Spy
     List<String> otherField = newArrayList();
-  }
-
-  @Test
-  public void testFieldWithTwoBindingAnnotations() throws Exception {
-    try {
-      injectTest(new TestWithFieldWithTwoBindingAnnotations());
-      fail("exception should be thrown");
-    } catch (MoreThanOneBindingAnnotationException e) {
-      // expected
-    }
-  }
-
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE })
-  @BindingAnnotation
-  @interface MyAnnotation {}
-
-  private static class TestWithFieldWithTwoBindingAnnotations {
-    @Named("x")
-    @MyAnnotation
-    @Mock
-    List<String> field;
   }
 
   @Test
