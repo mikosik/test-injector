@@ -22,8 +22,10 @@ import org.mockito.Spy;
 
 import com.google.inject.Key;
 import com.google.inject.Provider;
+import com.google.inject.util.Providers;
 import com.perunlabs.testinjector.Bind;
 import com.perunlabs.testinjector.util.Collections;
+import com.perunlabs.testinjector.util.Types;
 
 public class FieldBindingsCollector {
   private final Map<Key<?>, Binding<?>> bindings = Collections.newHashMap();
@@ -49,6 +51,8 @@ public class FieldBindingsCollector {
     for (Field field : annotatedFields(test.getClass(), annotation)) {
       if (isProvider(field)) {
         createProviderBinding(test, field);
+      } else if (Types.isJavaxProvider(field)) {
+        createJavaxProviderBinding(test, field);
       } else {
         createInstanceBinding(test, field);
       }
@@ -105,5 +109,26 @@ public class FieldBindingsCollector {
   private <T> void addProviderInstanceBinding(Key<T> key, Provider<T> value, Field field) {
     assertNotBound(key, field);
     bindings.put(key, new ToProviderBinding<T>(key, value, field));
+  }
+
+  /*
+   * javax provider binding
+   */
+
+  private void createJavaxProviderBinding(Object test, Field field) {
+    Key<?> key = keyProvidedBy(field);
+    Object instance = getFieldValue(test, field);
+
+    /**
+     * It is safe to cast instance to type denoted by key as instance object has
+     * been taken from field of that type.
+     */
+    castAndAddJavaxProviderBinding(key, instance, field);
+  }
+
+  private <T> void castAndAddJavaxProviderBinding(Key<T> key, Object value, Field field) {
+    @SuppressWarnings("unchecked")
+    javax.inject.Provider<T> castValue = (javax.inject.Provider<T>) value;
+    addProviderInstanceBinding(key, Providers.guicify(castValue), field);
   }
 }

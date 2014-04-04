@@ -81,6 +81,20 @@ public class BindTest {
     private String inject;
   }
 
+  @Test
+  public void binds_javax_provider() throws Exception {
+    JavaxProviderField test = new JavaxProviderField();
+    injectTest(test);
+    assertThat(test.inject).isSameAs(STRING);
+  }
+
+  private static class JavaxProviderField {
+    @Bind
+    javax.inject.Provider<String> bind = Providers.of(STRING);
+    @Inject
+    private String inject;
+  }
+
   @Test(expected = RuntimeException.class)
   public void binding_raw_provider_fails() throws Exception {
     RawProviderField test = new RawProviderField();

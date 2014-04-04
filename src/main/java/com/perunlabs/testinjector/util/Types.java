@@ -9,7 +9,7 @@ import com.google.inject.TypeLiteral;
 public class Types {
 
   public static TypeLiteral<?> typeProvidedBy(Field field) {
-    if (!isProvider(field)) {
+    if (!(isProvider(field) || (isJavaxProvider(field)))) {
       throw new IllegalArgumentException("Field " + field.toGenericString() + " is not a Provider");
     }
 
@@ -24,6 +24,11 @@ public class Types {
   public static boolean isProvider(Field field) {
     TypeLiteral<?> typeLiteral = typeOf(field);
     return typeLiteral.getRawType().equals(Provider.class);
+  }
+
+  public static boolean isJavaxProvider(Field field) {
+    TypeLiteral<?> typeLiteral = typeOf(field);
+    return typeLiteral.getRawType().equals(javax.inject.Provider.class);
   }
 
   public static TypeLiteral<?> typeOf(Field field) {

@@ -55,6 +55,30 @@ public class TypesTest {
   }
 
   /*
+   * isJavaxProvider()
+   */
+
+  @Test
+  public void string_field_is_not_javax_provider() throws Exception {
+    Field field = field("stringField");
+    assertThat(Types.isJavaxProvider(field)).isFalse();
+  }
+
+  @Test
+  public void list_of_strings_field_is_not_javax_provider() throws Exception {
+    Field field = field("listOfStringsField");
+    assertThat(Types.isJavaxProvider(field)).isFalse();
+  }
+
+  @Test
+  public void string_javax_provider_is_javax_provider() throws Exception {
+    Field field = field("stringJavaxProviderField");
+    assertThat(Types.isJavaxProvider(field)).isTrue();
+  }
+
+  javax.inject.Provider<String> stringJavaxProviderField;
+
+  /*
    * typeProvidedBy()
    */
 
