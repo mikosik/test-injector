@@ -36,26 +36,6 @@ public class TestInjectorTest {
   private static final String STRING = "some string";
 
   @Test
-  public void fields_marked_with_bind_annotation_can_be_injected_by_guice() throws Exception {
-    TestWithBindAnnotation test = new TestWithBindAnnotation();
-
-    injectTest(test);
-
-    assertThat(test.getStringProvider().get()).isSameAs(STRING);
-  }
-
-  private static class TestWithBindAnnotation {
-    @Bind
-    String string = STRING;
-    @Inject
-    private Provider<String> stringProvider;
-
-    public Provider<String> getStringProvider() {
-      return stringProvider;
-    }
-  }
-
-  @Test
   public void fields_marked_with_spy_annotation_are_set_to_mockito_spy() throws Exception {
     TestWithSpyAnnotation test = new TestWithSpyAnnotation();
 
@@ -120,26 +100,6 @@ public class TestInjectorTest {
     @Mock
     @SuppressWarnings("rawtypes")
     Provider rawProvider;
-  }
-
-  @Test
-  public void null_field_with_bind_annotation_is_forbidden() throws Exception {
-    try {
-      injectTest(new TestWithNullFieldWithBindAnnotation());
-      fail("exception should be thrown");
-    } catch (RuntimeException e) {
-      // expected
-      assertThat(e.getMessage())
-          .isEqualTo(
-              "Field java.lang.String "
-                  + "com.perunlabs.testinjector.TestInjectorTest$TestWithNullFieldWithBindAnnotation.nullValue is set to null"
-                  + " and has @Bind annotation.");
-    }
-  }
-
-  private static class TestWithNullFieldWithBindAnnotation {
-    @Bind
-    String nullValue = null;
   }
 
   @Test
@@ -238,28 +198,6 @@ public class TestInjectorTest {
 
     @Spy
     List<String> otherField = newArrayList();
-  }
-
-  @Test
-  public void mock_annotation_on_field_is_forbidden_when_other_field_with_the_same_type_has_inject()
-      throws Exception {
-    TestWithFieldsOfTheSameTypeAndDifferentAnnotations test =
-        new TestWithFieldsOfTheSameTypeAndDifferentAnnotations();
-
-    try {
-      test.performTestInjection();
-      fail("exception should be thrown");
-    } catch (DuplicateBindingException e) {
-      // expected
-    }
-  }
-
-  @SuppressWarnings("unused")
-  private static class TestWithFieldsOfTheSameTypeAndDifferentAnnotations extends InjectedTestCase {
-    @Mock
-    List<String> mock;
-    @Inject
-    List<String> inject;
   }
 
   @Test
