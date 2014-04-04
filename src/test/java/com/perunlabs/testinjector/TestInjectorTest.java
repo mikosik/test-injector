@@ -25,7 +25,6 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 
 import com.google.inject.BindingAnnotation;
-import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.perunlabs.testinjector.bind.DuplicateBindingException;
@@ -82,24 +81,6 @@ public class TestInjectorTest {
     public ArgumentCaptor<String> getStringCaptor() {
       return stringCaptor;
     }
-  }
-
-  @Test
-  public void guice_raw_provider_are_forbidden() throws Exception {
-    try {
-      injectTest(new TestWithRawProviderField());
-      fail("exception should be thrown");
-    } catch (RuntimeException e) {
-      // expected
-      assertThat(e.getMessage()).isEqualTo(
-          "Type com.google.inject.Provider is a raw Provider. Use generic one instead.");
-    }
-  }
-
-  private static class TestWithRawProviderField {
-    @Mock
-    @SuppressWarnings("rawtypes")
-    Provider rawProvider;
   }
 
   @Test
@@ -233,41 +214,5 @@ public class TestInjectorTest {
   private static class TestWithFieldWithMockAnnotationAndGenericType {
     @Mock
     public Provider<List<String>> field;
-  }
-
-  @Test
-  public void mocked_field_with_bind_annotation_can_be_injected() throws Exception {
-    TestWithMockedAndNamedField test = new TestWithMockedAndNamedField();
-    injectTest(test);
-    assertThat(test.field).isSameAs(test.injectedField.get());
-  }
-
-  private static class TestWithMockedAndNamedField {
-    @Mock
-    @Named("x")
-    public List<String> field;
-
-    @Inject
-    @Named("x")
-    public Provider<List<String>> injectedField;
-  }
-
-  @Test
-  public void non_null_field_cannot_be_mocked() throws Exception {
-    WithNonNullMock test = new WithNonNullMock();
-    try {
-      injectTest(test);
-      fail("exception should be thrown");
-    } catch (RuntimeException e) {
-      // expected
-    }
-  }
-
-  private static class WithNonNullMock {
-    @Mock
-    Runnable runnable = new Runnable() {
-      @Override
-      public void run() {}
-    };
   }
 }
