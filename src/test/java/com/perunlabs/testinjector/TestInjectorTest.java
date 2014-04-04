@@ -7,48 +7,18 @@ package com.perunlabs.testinjector;
 
 import static com.perunlabs.testinjector.inject.TestInjector.injectTest;
 import static com.perunlabs.testinjector.util.Collections.newArrayList;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 
 import com.google.inject.name.Named;
 import com.perunlabs.testinjector.bind.DuplicateBindingException;
 
 public class TestInjectorTest {
-  private static final String STRING = "some string";
-
-  @Test
-  public void fields_marked_with_captor_annotation_are_set_to_mockito_captor() throws Exception {
-    TestWithCaptorAnnotation test = new TestWithCaptorAnnotation();
-
-    injectTest(test);
-    ArgumentCaptor<String> captor = test.getStringCaptor();
-    assertThat(captor).isNotNull();
-
-    // checking that object can capture values which means it is a captor
-    @SuppressWarnings("unchecked")
-    List<String> mock = Mockito.mock(List.class);
-    mock.add(STRING);
-    Mockito.verify(mock).add(captor.capture());
-    assertThat(captor.getValue()).isEqualTo(STRING);
-  }
-
-  private static class TestWithCaptorAnnotation {
-    @Captor
-    ArgumentCaptor<String> stringCaptor;
-
-    public ArgumentCaptor<String> getStringCaptor() {
-      return stringCaptor;
-    }
-  }
 
   @Test
   public void annotation_on_different_fields_with_the_same_type_is_forbidden() throws Exception {
