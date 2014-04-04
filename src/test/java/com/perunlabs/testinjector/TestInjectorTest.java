@@ -5,6 +5,7 @@
 
 package com.perunlabs.testinjector;
 
+import static com.perunlabs.testinjector.inject.TestInjector.injectTest;
 import static com.perunlabs.testinjector.util.Collections.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
@@ -30,7 +31,6 @@ import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.perunlabs.testinjector.bind.DuplicateBindingException;
-import com.perunlabs.testinjector.inject.TestInjector;
 import com.perunlabs.testinjector.util.MoreThanOneBindingAnnotationException;
 
 public class TestInjectorTest {
@@ -41,7 +41,7 @@ public class TestInjectorTest {
   public void field_with_guice_inject_annotation_is_injected() throws Exception {
     TestWithGuiceInjection test = new TestWithGuiceInjection();
 
-    new TestInjector(test).injectTest();
+    injectTest(test);
 
     assertThat(test.getField()).isNotNull();
     assertThat(test.getField()).isInstanceOf(ClassWithInjectableConstructor.class);
@@ -65,7 +65,7 @@ public class TestInjectorTest {
   public void fields_marked_with_bind_annotation_can_be_injected_by_guice() throws Exception {
     TestWithBindAnnotation test = new TestWithBindAnnotation();
 
-    new TestInjector(test).injectTest();
+    injectTest(test);
 
     assertThat(test.getStringProvider().get()).isSameAs(STRING);
   }
@@ -85,7 +85,7 @@ public class TestInjectorTest {
   public void fields_marked_with_spy_annotation_are_set_to_mockito_spy() throws Exception {
     TestWithSpyAnnotation test = new TestWithSpyAnnotation();
 
-    new TestInjector(test).injectTest();
+    injectTest(test);
     List<String> list = test.getList();
 
     assertThat(list).isNotSameAs(STRING_LIST);
@@ -109,7 +109,7 @@ public class TestInjectorTest {
   public void fields_marked_with_captor_annotation_are_set_to_mockito_captor() throws Exception {
     TestWithCaptorAnnotation test = new TestWithCaptorAnnotation();
 
-    new TestInjector(test).injectTest();
+    injectTest(test);
     ArgumentCaptor<String> captor = test.getStringCaptor();
     assertThat(captor).isNotNull();
 
@@ -132,9 +132,8 @@ public class TestInjectorTest {
 
   @Test
   public void guice_raw_provider_are_forbidden() throws Exception {
-    TestInjector testInjector = new TestInjector(new TestWithRawProviderField());
     try {
-      testInjector.injectTest();
+      injectTest(new TestWithRawProviderField());
       fail("exception should be thrown");
     } catch (RuntimeException e) {
       // expected
@@ -151,10 +150,8 @@ public class TestInjectorTest {
 
   @Test
   public void null_field_with_bind_annotation_is_forbidden() throws Exception {
-    TestInjector testInjector = new TestInjector(new TestWithNullFieldWithBindAnnotation());
-
     try {
-      testInjector.injectTest();
+      injectTest(new TestWithNullFieldWithBindAnnotation());
       fail("exception should be thrown");
     } catch (RuntimeException e) {
       // expected
@@ -173,10 +170,8 @@ public class TestInjectorTest {
 
   @Test
   public void null_field_with_spy_annotation_is_forbidden() throws Exception {
-    TestInjector testInjector = new TestInjector(new TestWithNullFieldWithSpyAnnotation());
-
     try {
-      testInjector.injectTest();
+      injectTest(new TestWithNullFieldWithSpyAnnotation());
       fail("exception should be thrown");
     } catch (RuntimeException e) {
       // expected
@@ -205,10 +200,8 @@ public class TestInjectorTest {
   }
 
   private void assertDuplicateBindingExceptionIsThrown(Object test) throws Exception {
-    TestInjector testInjector = new TestInjector(test);
-
     try {
-      testInjector.injectTest();
+      injectTest(test);
       fail("exception should be thrown");
     } catch (DuplicateBindingException e) {
       // expected
@@ -297,10 +290,8 @@ public class TestInjectorTest {
 
   @Test
   public void testFieldWithTwoBindingAnnotations() throws Exception {
-    TestInjector testInjector = new TestInjector(new TestWithFieldWithTwoBindingAnnotations());
-
     try {
-      testInjector.injectTest();
+      injectTest(new TestWithFieldWithTwoBindingAnnotations());
       fail("exception should be thrown");
     } catch (MoreThanOneBindingAnnotationException e) {
       // expected
@@ -323,7 +314,7 @@ public class TestInjectorTest {
   public void generice_types_can_be_mocked() throws Exception {
     TestWithFieldWithMockAnnotationAndGenericType test =
         new TestWithFieldWithMockAnnotationAndGenericType();
-    new TestInjector(test).injectTest();
+    injectTest(test);
     assertThat(test.field).isNotNull();
   }
 
@@ -335,7 +326,7 @@ public class TestInjectorTest {
   @Test
   public void mocked_field_with_bind_annotation_can_be_injected() throws Exception {
     TestWithMockedAndNamedField test = new TestWithMockedAndNamedField();
-    new TestInjector(test).injectTest();
+    injectTest(test);
     assertThat(test.field).isSameAs(test.injectedField.get());
   }
 
@@ -352,7 +343,7 @@ public class TestInjectorTest {
   @Test
   public void binding_from_configure_methods_are_used() throws Exception {
     TestWithConfigureMethod test = new TestWithConfigureMethod();
-    new TestInjector(test).injectTest();
+    injectTest(test);
     assertThat(test.integer).isEqualTo(Integer.valueOf(77));
   }
 
@@ -370,9 +361,8 @@ public class TestInjectorTest {
   @Test
   public void non_null_field_cannot_be_mocked() throws Exception {
     WithNonNullMock test = new WithNonNullMock();
-    TestInjector testInjector = new TestInjector(test);
     try {
-      testInjector.injectTest();
+      injectTest(test);
       fail("exception should be thrown");
     } catch (RuntimeException e) {
       // expected

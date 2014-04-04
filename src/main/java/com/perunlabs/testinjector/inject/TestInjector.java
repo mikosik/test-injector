@@ -11,54 +11,41 @@ import static com.perunlabs.testinjector.util.Keys.keyOf;
 import static com.perunlabs.testinjector.util.Reflections.annotatedFields;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import org.mockito.MockitoAnnotations;
 
-import com.google.inject.Binder;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.perunlabs.testinjector.bind.BindingModule;
 import com.perunlabs.testinjector.bind.FieldBindingsCollector;
 
 public class TestInjector {
-  private final FieldBindingsCollector fieldBindingsCollector = new FieldBindingsCollector();
-  private final Object test;
-
-  public TestInjector(Object test) {
-    this.test = test;
-  }
-
-  public void injectTest() {
+  public static void injectTest(Object test) {
     checkPreconditions(test);
     MockitoAnnotations.initMocks(test);
 
+    FieldBindingsCollector fieldBindingsCollector = new FieldBindingsCollector();
     fieldBindingsCollector.collectBindings(test);
 
-    checkThatKeysOfInjectedFieldsAreNotUsedByOtherAnnotations();
-    injectGuiceStuff();
+    checkThatKeysOfInjectedFieldsAreNotUsedByOtherAnnotations(test, fieldBindingsCollector);
+    injectGuiceStuff(test, fieldBindingsCollector);
   }
 
-  private void checkThatKeysOfInjectedFieldsAreNotUsedByOtherAnnotations() {
+  private static void checkThatKeysOfInjectedFieldsAreNotUsedByOtherAnnotations(Object test,
+      FieldBindingsCollector fieldBindingsCollector) {
     for (Field field : annotatedFields(test.getClass(), Inject.class)) {
       fieldBindingsCollector.assertNotBound(keyOf(field), field);
     }
   }
 
-  private void injectGuiceStuff() {
+  private static void injectGuiceStuff(Object test, FieldBindingsCollector fieldBindingsCollector) {
     BindingModule bindingModule = new BindingModule(fieldBindingsCollector.bindings());
-    Injector injector = createInjector(getTestModule(), bindingModule);
-    injector.injectMembers(test);
-  }
-
-  private Module getTestModule() {
+    ArrayList<Module> modules = new ArrayList<Module>();
+    modules.add(bindingModule);
     if (test instanceof Module) {
-      return (Module) test;
-    } else {
-      return new Module() {
-        @Override
-        public void configure(Binder binder) {}
-      };
+      modules.add((Module) test);
     }
+    createInjector(modules).injectMembers(test);
   }
 }

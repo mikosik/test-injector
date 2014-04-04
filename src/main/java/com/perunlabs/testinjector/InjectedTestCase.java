@@ -16,6 +16,6 @@ public class InjectedTestCase extends AbstractModule {
 
   @Before
   public void performTestInjection() throws Exception {
-    new TestInjector(this).injectTest();
+    TestInjector.injectTest(this);
   }
 }
