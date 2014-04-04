@@ -24,10 +24,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 
-import com.google.inject.Binder;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
-import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.perunlabs.testinjector.bind.DuplicateBindingException;
@@ -36,30 +34,6 @@ import com.perunlabs.testinjector.util.MoreThanOneBindingAnnotationException;
 public class TestInjectorTest {
   private static final List<String> STRING_LIST = new ArrayList<String>();
   private static final String STRING = "some string";
-
-  @Test
-  public void field_with_guice_inject_annotation_is_injected() throws Exception {
-    TestWithGuiceInjection test = new TestWithGuiceInjection();
-
-    injectTest(test);
-
-    assertThat(test.getField()).isNotNull();
-    assertThat(test.getField()).isInstanceOf(ClassWithInjectableConstructor.class);
-  }
-
-  private static class TestWithGuiceInjection {
-    @Inject
-    private ClassWithInjectableConstructor field;
-
-    public ClassWithInjectableConstructor getField() {
-      return field;
-    }
-  }
-
-  public static class ClassWithInjectableConstructor {
-    @Inject
-    public ClassWithInjectableConstructor() {}
-  }
 
   @Test
   public void fields_marked_with_bind_annotation_can_be_injected_by_guice() throws Exception {
@@ -338,24 +312,6 @@ public class TestInjectorTest {
     @Inject
     @Named("x")
     public Provider<List<String>> injectedField;
-  }
-
-  @Test
-  public void binding_from_configure_methods_are_used() throws Exception {
-    TestWithConfigureMethod test = new TestWithConfigureMethod();
-    injectTest(test);
-    assertThat(test.integer).isEqualTo(Integer.valueOf(77));
-  }
-
-  @SuppressWarnings("boxing")
-  private static class TestWithConfigureMethod implements Module {
-    @Inject
-    public Integer integer;
-
-    @Override
-    public void configure(Binder binder) {
-      binder.bind(Integer.class).toInstance(77);
-    }
   }
 
   @Test
