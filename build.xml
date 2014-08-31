@@ -37,7 +37,7 @@
   </target>
 
   <target name="compile-java" depends="init">
-    <javac destdir="${dir.classes}" includeantruntime="true">
+    <javac destdir="${dir.classes}" includeantruntime="false">
       <src path="${dir.sources}" />
       <classpath>
         <path refid="dependencies" />
@@ -46,7 +46,7 @@
   </target>
 
   <target name="compile-test" depends="compile-java">
-    <javac destdir="${dir.test-classes}">
+    <javac destdir="${dir.test-classes}" includeantruntime="false">
       <src path="src/test" />
       <classpath>
         <path refid="dependencies" />
