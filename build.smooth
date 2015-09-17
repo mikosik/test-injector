@@ -22,10 +22,10 @@ sources: files("src/main/java") ;
 
 test-injector.jar:
     javac(sources=sources, libs=deps, source="1.5", target="1.5") |
-    concatenateFiles(with=sources) |
+    concatenateFileArrays(with=sources) |
     jar ;
 
-test-injector.jar-with-deps: [test-injector.jar] | concatenateBlobs(with=deps) ;
+test-injector.jar-with-deps: [test-injector.jar] | concatenateBlobArrays(with=deps) ;
 
 test-injector-tests.jar:
     files("src/test/java") |
@@ -33,7 +33,7 @@ test-injector-tests.jar:
     jar ;
 
 test:
-    concatenateBlobs([ test-injector-tests.jar ], with=test-injector.jar-with-deps) |
+    concatenateBlobArrays([ test-injector-tests.jar ], with=test-injector.jar-with-deps) |
     junit(include="com/perunlabs/**/*Test.class");
- 
+
 
