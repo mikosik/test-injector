@@ -8,7 +8,7 @@
 # smooth build test
 
 
-deps: [
+deps = [
     file("//lib/assertj-core-1.5.0.jar"),
     file("//lib/com.springsource.org.objenesis-1.0.0.jar"),
     file("//lib/guice-3.0-no_aop.jar"),
@@ -18,21 +18,21 @@ deps: [
     file("//lib/mockito-core-1.9.5.jar"),
 ];
 
-sources: files("//src/main/java") ;
+sources = files("//src/main/java") ;
 
-test-injector.jar:
+test-injector.jar =
     javac(sources=sources, libs=deps, source="1.5", target="1.5") |
     concatenateFileArrays(with=sources) |
     jar ;
 
-test-injector.jar-with-deps: [test-injector.jar] | concatenateBlobArrays(with=deps) ;
+test-injector.jar-with-deps = [test-injector.jar] | concatenateBlobArrays(with=deps) ;
 
-test-injector-tests.jar:
+test-injector-tests.jar =
     files("//src/test/java") |
     javac(libs=test-injector.jar-with-deps, source="1.5", target="1.5") |
     jar ;
 
-test:
+test =
     concatenateBlobArrays([ test-injector-tests.jar ], with=test-injector.jar-with-deps) |
     junit(include="com/perunlabs/**/*Test.class");
 
