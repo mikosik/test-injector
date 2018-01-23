@@ -1,39 +1,51 @@
 # build file for smooth build system
 # smooth-build can be downloaded from https://github.com/mikosik/smooth-build
 #
-# to build test-injector.jar type
-# smooth build test-injector.jar
+# to build test_injector.jar type
+# smooth build test_injector.jar
 #
 # to run tests type:
 # smooth build test
 
 
 deps = [
-    file("//lib/assertj-core-1.5.0.jar"),
-    file("//lib/com.springsource.org.objenesis-1.0.0.jar"),
-    file("//lib/guice-3.0-no_aop.jar"),
-    file("//lib/hamcrest-core-1.3.jar"),
-    file("//lib/javax.inject.jar"),
-    file("//lib/junit-4.11.jar"),
-    file("//lib/mockito-core-1.9.5.jar"),
+  file("//lib/com.springsource.org.objenesis-1.0.0.jar"),
+  file("//lib/guice-3.0-no_aop.jar"),
+  file("//lib/javax.inject.jar"),
+  file("//lib/assertj-core-1.5.0.jar"),
+  file("//lib/hamcrest-core-1.3.jar"),
+  file("//lib/junit-4.11.jar"),
+  file("//lib/mockito-core-1.9.5.jar"),
 ];
 
 sources = files("//src/main/java") ;
 
-test-injector.jar =
-    javac(sources=sources, libs=deps, source="1.5", target="1.5") |
-    concatenateFileArrays(with=sources) |
-    jar ;
+test_injector_jar =
+  javac(
+    sources = sources,
+    libs = deps,
+    source = "1.5",
+    target = "1.5",
+  ) |
+  concatenateFileArrays(with = sources) |
+  jar;
 
-test-injector.jar-with-deps = [test-injector.jar] | concatenateBlobArrays(with=deps) ;
+test_injector_jar_with_deps = concatenateBlobArrays([test_injector_jar], with = deps) ;
 
-test-injector-tests.jar =
-    files("//src/test/java") |
-    javac(libs=test-injector.jar-with-deps, source="1.5", target="1.5") |
-    jar ;
+test_injector_tests_jar =
+  javac(
+    sources = files("//src/test/java"),
+    libs = test_injector_jar_with_deps,
+    source = "1.5",
+    target = "1.5",
+  ) |
+  jar;
 
 test =
-    concatenateBlobArrays([ test-injector-tests.jar ], with=test-injector.jar-with-deps) |
-    junit(include="com/perunlabs/**/*Test.class");
+  junit(
+    tests = test_injector_tests_jar,
+    include = "com/perunlabs/**/*Test.class",
+    deps = test_injector_jar_with_deps,
+  );
 
 
