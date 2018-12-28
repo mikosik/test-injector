@@ -27,10 +27,10 @@ test_injector_jar =
     source = "1.5",
     target = "1.5",
   ) |
-  concatenateFileArrays(with = sources) |
+  concatenate(sources) |
   jar;
 
-test_injector_jar_with_deps = concatenateBlobArrays([test_injector_jar], with = deps) ;
+test_injector_jar_with_deps = concatenate([test_injector_jar], deps) ;
 
 test_injector_tests_jar =
   javac(
