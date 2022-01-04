@@ -9,37 +9,37 @@
 
 
 deps = [
-  aFile("lib/com.springsource.org.objenesis-1.0.0.jar"),
-  aFile("lib/guice-3.0-no_aop.jar"),
-  aFile("lib/javax.inject.jar"),
-  aFile("lib/assertj-core-1.5.0.jar"),
-  aFile("lib/hamcrest-core-1.3.jar"),
-  aFile("lib/junit-4.11.jar"),
-  aFile("lib/mockito-core-1.9.5.jar"),
+  projectFile("lib/com.springsource.org.objenesis-1.0.0.jar"),
+  projectFile("lib/guice-3.0-no_aop.jar"),
+  projectFile("lib/javax.inject.jar"),
+  projectFile("lib/assertj-core-1.5.0.jar"),
+  projectFile("lib/hamcrest-core-1.3.jar"),
+  projectFile("lib/junit-4.11.jar"),
+  projectFile("lib/mockito-core-1.9.5.jar"),
 ];
 
-sources = files("src/main/java") ;
+sources = projectFiles("src/main/java") ;
 
-test_injector_jar =
+test_injector_classes =
   javac(
     srcs = sources,
     libs = deps,
     source = "1.7",
     target = "1.7",
-  ) |
-  concat(sources) |
-  jar;
+  );
+test_injector_jar =
+    concat([test_injector_classes, sources])
+  | jarFile("test-injector.jar");
 
-test_injector_jar_with_deps = concat([test_injector_jar], deps) ;
+[File] test_injector_jar_with_deps = concat([[test_injector_jar], deps]) ;
 
 test_injector_tests_jar =
-  javac(
-    srcs = files("src/test/java"),
-    libs = test_injector_jar_with_deps,
-    source = "1.7",
-    target = "1.7",
-  ) |
-  jar;
+    javac(
+      srcs = projectFiles("src/test/java"),
+      libs = test_injector_jar_with_deps,
+      source = "1.7",
+      target = "1.7")
+  | jarFile("tests.jar");
 
 test =
   junit(
