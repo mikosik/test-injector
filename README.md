@@ -3,6 +3,8 @@ test-injector
 
 Injects your tests using guice and mockito.
 
+__Note: This is abandoned project created long time ago. There are better, actively supported projects nowadays that provide similar functionality.__
+
 test-injector relieves you from specyfing most of set-up code in your junit tests.
 Let's learn it using simple example.
 
